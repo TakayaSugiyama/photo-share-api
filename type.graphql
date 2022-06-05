@@ -1,0 +1,37 @@
+scalar DateTime
+
+enum PhotoCategory {
+  SELFIE
+  PORTRAIT
+  ACTION
+  LANDSCAPE
+  GRAPHIC
+}
+
+type Photo {
+  id: ID!
+  name: string!
+  url: string!
+  description: string
+  created: DateTime!
+  category: PhotoCategory!
+  photoBy: User!
+}
+
+type User {
+  githubLogin: ID!
+  name: string
+  avatar: string
+  postedPhotos: [Photo!]!
+}
+
+type Query {
+  totalPhotos: Int!
+  allPhotos: [Photo!]!
+  totalUsers: Int!
+  allUsers: [User!]!
+}
+
+schema {
+  query: Query
+}
