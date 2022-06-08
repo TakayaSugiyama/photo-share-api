@@ -1,0 +1,26 @@
+{
+  "name": "photo-share-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon -e js,json,graphql",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TakayaSugiyama/photo-share-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TakayaSugiyama/photo-share-api/issues"
+  },
+  "homepage": "https://github.com/TakayaSugiyama/photo-share-api#readme",
+  "dependencies": {
+    "apollo-server": "^3.8.2",
+    "graphql": "^16.5.0",
+    "nodemon": "^2.0.16"
+  }
+}
