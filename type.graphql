@@ -1,15 +1,11 @@
 scalar DateTime
 
-enum SortDirection {
-  ASC
-  DESC
-}
-
-enum SortableColumn {
-  name
-  description
-  category
-  created
+type User {
+  githubLogin: ID!
+  name: String
+  avatar: String
+  postedPhotos: [Photo!]!
+  inPhotos: [Photo!]!
 }
 
 enum PhotoCategory {
@@ -22,52 +18,23 @@ enum PhotoCategory {
 
 type Photo {
   id: ID!
-  name: string!
-  url: string!
-  description: string
+  url: String!
+  name: String!
+  description: String
   created: DateTime!
   category: PhotoCategory!
   photoBy: User!
-}
-
-type User {
-  githubLogin: ID!
-  name: string
-  avatar: string
-  postedPhotos: [Photo!]!
-  inPhotos: [Photo!]!
-  friends: [FriendShip!]!
-}
-
-type FriendShip {
-  friends: [User!]!
-  howlong: Int!
-  whereWeMet: Location
+  taggedUsers: [User!]!
 }
 
 type Query {
   totalPhotos: Int!
-  allPhotos(
-    category: PhotoCategory
-    first: INT = 50
-    start: INT = 0
-    sort: SortDirection = ASC
-    sortBy: SortableColumn = created
-  ): [Photo!]!
-  Photo(id: ID!): Photo!
-  totalUsers: Int!
-  allUsers(
-    first: INT = 50
-    start: INT = 0
-    sort: SortDirection = ASC
-    sortBy: SortableColumn = created
-  ): [User!]!
-  User(githubLogin: ID!): User!
+  allPhotos: [Photo!]!
 }
 
 input PostPhotoInput {
-  name: string!
-  description: string
+  name: String!
+  description: String
   category: PhotoCategory = PORTRAIT
 }
 
@@ -75,7 +42,3 @@ type Mutation {
   postPhoto(input: PostPhotoInput!): Photo!
 }
 
-schema {
-  query: Query
-  mutation: Mutation
-}
