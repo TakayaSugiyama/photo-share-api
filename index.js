@@ -15,12 +15,16 @@ const startServer = async () => {
   const client = new MongoClient(MONGO_DB, { useNewUrlParser: true });
   await client.connect();
   const db = client.db();
-  const context = { db };
   console.log("Connected successfully to server");
   const server = new ApolloServer({
     typeDefs,
     resolvers,
-    context,
+    context: async ({ req }) => {
+      const githubToken = req.headers.authorization;
+      console.log({ githubToken });
+      const currentUser = await db.collection("users").findOne({ githubToken });
+      return { db, currentUser };
+    },
     csrfPrevention: true,
   });
 
