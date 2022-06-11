@@ -45,4 +45,31 @@ module.exports = {
 
     return { user, token: access_token };
   },
+  async addFakeUsers(parent, { count }, { db }) {
+    const url = `https://randomuser.me/api/?results=${count}`;
+
+    const { results } = await fetch(url).then((res) => res.json());
+
+    const users = results.map((r) => ({
+      githubLogin: r.login.username,
+      name: `${r.name.first} ${r.name.last}`,
+      avatar: r.picture.thumbnail,
+      githubToken: r.login.sha1,
+    }));
+
+    await db.collection("users").insert(users);
+    return users;
+  },
+  async fakeUserAuth(parent, { githubLogin }, { db }) {
+    const user = await db.collection("users").findOne({ githubLogin });
+
+    if (!user) {
+      throw new Error(`Cannot find user with githubLogin ${githubLogin}`);
+    }
+
+    return {
+      token: user.githubToken,
+      user,
+    };
+  },
 };
