@@ -32,12 +32,17 @@ type Photo {
   taggedUsers: [User!]!
 }
 
+
 type Query {
   totalPhotos: Int!
   allPhotos: [Photo!]!
   totalUsers: Int!
   allUsers: [User!]!
   me: User
+}
+
+type Subscription {
+  newPhoto: Photo
 }
 
 input PostPhotoInput {

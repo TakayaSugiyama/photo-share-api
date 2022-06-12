@@ -1,4 +1,5 @@
 const { ApolloServer } = require("apollo-server-express");
+const { PubSub } = require("graphql-subscriptions");
 const express = require("express");
 const expressPlayGround =
   require("graphql-playground-middleware-express").default;
@@ -29,12 +30,15 @@ const startServer = async () => {
   await client.connect();
   const db = client.db();
   console.log("Connected successfully to server");
+  const pubsub = new PubSub();
   const server = new ApolloServer({
     schema,
-    context: async ({ req }) => {
-      const githubToken = req.headers.authorization;
+    context: async ({ req, connection }) => {
+      const githubToken = req
+        ? req.headers.authorization
+        : connection.context.Authorization;
       const currentUser = await db.collection("users").findOne({ githubToken });
-      return { db, currentUser };
+      return { db, currentUser, pubsub };
     },
     csrfPrevention: true,
     plugins: [
@@ -55,8 +59,13 @@ const startServer = async () => {
   await server.start();
   server.applyMiddleware({ app });
   app.get("/", (req, res) => res.end("Welcome to the PhotoShare API"));
-  app.get("/playground", expressPlayGround({ endpoint: "/graphql" }));
-  httpServer.listen({ port: 4000 }, () => console.log("server start!!"));
+  app.get(
+    "/playground",
+    expressPlayGround({
+      endpoint: "/graphql",
+    })
+  );
+  httpServer.listen({ port: 4000 }, () => console.log("server start"));
 };
 
 startServer();
